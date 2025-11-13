@@ -1,0 +1,95 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Cadastro de Cliente - Imóvel Prime{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header text-center">
+                <h3 class="mb-0"><i class="bi bi-person-plus"></i> Cadastro de Cliente</h3>
+            </div>
+            <div class="card-body p-4">
+                <form method="post">
+                    {% csrf_token %}
+                    {% if form.errors %}
+                        <div class="alert alert-danger">
+                            <ul class="mb-0">
+                                {% for field, errors in form.errors.items %}
+                                    {% for error in errors %}
+                                        <li>{{ error }}</li>
+                                    {% endfor %}
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.nome.id_for_label }}" class="form-label">{{ form.nome.label }}</label>
+                        {{ form.nome }}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.email.id_for_label }}" class="form-label">{{ form.email.label }}</label>
+                        {{ form.email }}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.telefone.id_for_label }}" class="form-label">{{ form.telefone.label }}</label>
+                        {{ form.telefone }}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.cpf.id_for_label }}" class="form-label">{{ form.cpf.label }}</label>
+                        {{ form.cpf }}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.senha.id_for_label }}" class="form-label">{{ form.senha.label }}</label>
+                        {{ form.senha }}
+                        {% if form.senha.help_text %}
+                            <small class="form-text text-muted">{{ form.senha.help_text }}</small>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.confirmar_senha.id_for_label }}" class="form-label">{{ form.confirmar_senha.label }}</label>
+                        {{ form.confirmar_senha }}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.observacoes.id_for_label }}" class="form-label">{{ form.observacoes.label }}</label>
+                        {{ form.observacoes }}
+                    </div>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="http://localhost:8080/" class="btn btn-secondary">Cancelar</a>
+                        <button type="submit" class="btn btn-primary">Cadastrar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Máscara de CPF brasileiro
+document.addEventListener('DOMContentLoaded', function() {
+    const cpfInput = document.getElementById('cpf');
+    
+    if (cpfInput) {
+        cpfInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            
+            if (value.length <= 11) {
+                value = value.replace(/(\d{3})(\d)/, '$1.$2');
+                value = value.replace(/(\d{3})(\d)/, '$1.$2');
+                value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+                e.target.value = value;
+            }
+        });
+    }
+});
+</script>
+{% endblock %}
+

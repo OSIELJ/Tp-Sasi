@@ -1,0 +1,345 @@
+{% extends "admin/base.html" %}
+{% load i18n static %}
+
+{% block extrastyle %}
+    {{ block.super }}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --success-color: #27ae60;
+            --danger-color: #e74c3c;
+            --warning-color: #f39c12;
+            --light-bg: #f8f9fa;
+            --dark-text: #2c3e50;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+            min-height: 100vh;
+            display: flex !important;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            margin: 0 !important;
+        }
+
+        #header {
+            display: none !important;
+        }
+
+        #content {
+            width: 100% !important;
+            max-width: 450px;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+
+        #content-main {
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+
+        .login-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+
+        .login-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #34495e 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .login-header h1 {
+            color: white;
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .login-header p {
+            color: rgba(255,255,255,0.9);
+            margin: 0.5rem 0 0 0;
+            font-size: 0.9rem;
+        }
+
+        .login-form {
+            padding: 2rem;
+        }
+
+        .form-row {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-row label {
+            font-weight: 600;
+            color: var(--dark-text);
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .form-row input[type="text"],
+        .form-row input[type="password"],
+        #id_username,
+        #id_password,
+        input[name="username"],
+        input[name="password"] {
+            width: 100% !important;
+            padding: 0.75rem !important;
+            border: 2px solid #e0e0e0 !important;
+            border-radius: 8px !important;
+            font-size: 1rem !important;
+            transition: all 0.3s ease !important;
+            box-sizing: border-box !important;
+            font-family: inherit !important;
+            background: white !important;
+            margin: 0 !important;
+        }
+
+        .form-row input[type="text"]:focus,
+        .form-row input[type="password"]:focus,
+        #id_username:focus,
+        #id_password:focus,
+        input[name="username"]:focus,
+        input[name="password"]:focus {
+            outline: none !important;
+            border-color: var(--secondary-color) !important;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1) !important;
+        }
+
+        .submit-row {
+            margin-top: 2rem;
+            padding: 0;
+        }
+
+        .submit-row input[type="submit"] {
+            width: 100%;
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(135deg, var(--secondary-color) 0%, #2980b9 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .submit-row input[type="submit"]:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.4);
+        }
+
+        .errornote {
+            background: linear-gradient(135deg, var(--danger-color) 0%, #c0392b 100%);
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            border: none;
+            font-weight: 500;
+        }
+
+        .help {
+            color: #6c757d;
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+        }
+
+        .login-footer {
+            text-align: center;
+            padding: 1.5rem;
+            background: var(--light-bg);
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .login-footer a {
+            color: var(--secondary-color);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .login-footer a:hover {
+            text-decoration: underline;
+        }
+
+        .back-link {
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        .back-link a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 0.5rem 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .back-link a:hover {
+            background: rgba(255, 255, 255, 0.2);
+            text-decoration: none;
+        }
+
+        .password-reset-link {
+            text-align: right;
+            margin-top: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .password-reset-link a {
+            transition: all 0.3s ease;
+        }
+
+        .password-reset-link a:hover {
+            opacity: 0.8;
+        }
+
+        /* Sobrescrever estilos do Django admin */
+        .login-container input,
+        .login-container select,
+        .login-container textarea {
+            font-family: inherit !important;
+        }
+
+        .login-container .form-row:after {
+            content: none !important;
+        }
+
+        .login-container .form-row {
+            clear: both;
+            padding: 0;
+            margin: 0 0 1.5rem 0;
+        }
+
+        /* Esconder elementos desnecessários do Django admin */
+        .login-container .required:after {
+            content: '' !important;
+        }
+
+        .login-container br {
+            display: none;
+        }
+    </style>
+{% endblock %}
+
+{% block bodyclass %}login{% endblock %}
+
+{% block usertools %}{% endblock %}
+
+{% block nav-global %}{% endblock %}
+
+{% block nav-sidebar %}{% endblock %}
+
+{% block content_title %}{% endblock %}
+
+{% block breadcrumbs %}{% endblock %}
+
+{% block content %}
+<div class="login-container">
+    <div class="login-header">
+        <h1>
+            <i class="bi bi-house-door"></i>
+            Imóvel Prime
+        </h1>
+        <p>Painel Administrativo</p>
+    </div>
+
+    <div class="login-form">
+        {% if form.errors and not form.non_field_errors %}
+            <div class="errornote">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+                Por favor, corrija os erros abaixo.
+            </div>
+        {% endif %}
+
+        {% if form.non_field_errors %}
+            {% for error in form.non_field_errors %}
+                <div class="errornote">
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                    {{ error }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <form action="{{ app_path }}" method="post" id="login-form">
+            {% csrf_token %}
+            
+            <div class="form-row">
+                <label for="id_username">
+                    <i class="bi bi-person"></i> Usuário
+                </label>
+                {{ form.username }}
+                {% if form.username.errors %}
+                    <div class="errorlist" style="color: var(--danger-color); font-size: 0.875rem; margin-top: 0.25rem;">
+                        {% for error in form.username.errors %}
+                            <div>{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="form-row">
+                <label for="id_password">
+                    <i class="bi bi-lock"></i> Senha
+                </label>
+                {{ form.password }}
+                {% if form.password.errors %}
+                    <div class="errorlist" style="color: var(--danger-color); font-size: 0.875rem; margin-top: 0.25rem;">
+                        {% for error in form.password.errors %}
+                            <div>{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            {% url 'admin_password_reset' as password_reset_url %}
+            {% if password_reset_url %}
+                <div class="password-reset-link">
+                    <a href="{{ password_reset_url }}" style="color: var(--secondary-color); text-decoration: none; font-size: 0.875rem;">
+                        <i class="bi bi-question-circle"></i> Esqueceu sua senha?
+                    </a>
+                </div>
+            {% endif %}
+
+            <div class="submit-row">
+                <input type="submit" value="Entrar">
+                <input type="hidden" name="next" value="{{ next }}">
+            </div>
+        </form>
+    </div>
+
+    <div class="login-footer">
+        <p style="margin: 0; color: #6c757d; font-size: 0.875rem;">
+            <i class="bi bi-shield-check"></i> Área restrita - Acesso autorizado apenas
+        </p>
+    </div>
+</div>
+
+<div class="back-link">
+    <a href="http://localhost:8080/">
+        <i class="bi bi-arrow-left"></i> Voltar para o site
+    </a>
+</div>
+{% endblock %}
+

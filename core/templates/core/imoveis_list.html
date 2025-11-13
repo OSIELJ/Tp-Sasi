@@ -1,0 +1,62 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Imóveis - Imóvel Prime{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-12">
+        <h1 class="display-5 mb-2">Imóveis Disponíveis</h1>
+        <p class="text-muted">Explore nossa lista completa de imóveis para venda e aluguel.</p>
+    </div>
+</div>
+
+{% if imoveis %}
+    <div class="row">
+        {% for imovel in imoveis %}
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-building"></i> {{ imovel.titulo }}
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        {% if imovel.tipo == 'venda' %}
+                            <span class="badge bg-primary">
+                                <i class="bi bi-tag"></i> Venda
+                            </span>
+                        {% else %}
+                            <span class="badge bg-success">
+                                <i class="bi bi-house"></i> Aluguel
+                            </span>
+                        {% endif %}
+                    </div>
+                    <p class="card-text">
+                        <strong><i class="bi bi-currency-dollar"></i> Preço:</strong> 
+                        <span class="fs-5 text-primary fw-bold">R$ {{ imovel.preco|floatformat:2 }}</span>
+                    </p>
+                    <p class="card-text">
+                        <strong><i class="bi bi-geo-alt"></i> Endereço:</strong><br>
+                        {{ imovel.endereco }}
+                    </p>
+                    <p class="card-text">{{ imovel.descricao|truncatewords:30 }}</p>
+                    <small class="text-muted">
+                        <i class="bi bi-calendar"></i> Cadastrado em: {{ imovel.data_cadastro|date:"d/m/Y H:i" }}
+                    </small>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="alert alert-info d-flex align-items-center">
+        <i class="bi bi-info-circle me-3" style="font-size: 2rem;"></i>
+        <div>
+            <h5 class="alert-heading">Nenhum imóvel disponível</h5>
+            <p class="mb-0">Novos imóveis serão adicionados em breve.</p>
+        </div>
+    </div>
+{% endif %}
+{% endblock %}
+

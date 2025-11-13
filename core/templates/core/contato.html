@@ -1,0 +1,56 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Contato - Imóvel Prime{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-12">
+        <h1 class="display-5 mb-2">Entre em Contato</h1>
+        <p class="text-muted">Entre em contato conosco para mais informações sobre nossos imóveis.</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-envelope"></i> Informações de Contato</h5>
+            </div>
+            <div class="card-body p-4">
+                <div class="mb-4">
+                    <h6><i class="bi bi-geo-alt-fill text-primary"></i> Endereço</h6>
+                    <p class="ms-4">
+                        Rua Exemplo, 123 - Centro<br>
+                        Diamantina - MG, 39100-000
+                    </p>
+                </div>
+                <div class="mb-4">
+                    <h6><i class="bi bi-telephone-fill text-success"></i> Telefone</h6>
+                    <p class="ms-4">(38) 3531-1234</p>
+                </div>
+                <div class="mb-4">
+                    <h6><i class="bi bi-envelope-fill text-info"></i> E-mail</h6>
+                    <p class="ms-4">contato@imovelprime.com.br</p>
+                </div>
+                <div class="mb-4">
+                    <h6><i class="bi bi-clock-fill text-warning"></i> Horário de Atendimento</h6>
+                    <p class="ms-4">
+                        Segunda a Sexta: 8h às 18h<br>
+                        Sábado: 8h às 12h
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card border-primary">
+            <div class="card-body text-center">
+                <i class="bi bi-headset" style="font-size: 4rem; color: var(--secondary-color); margin-bottom: 1rem;"></i>
+                <h5 class="card-title">Atendimento</h5>
+                <p class="card-text text-muted">Estamos sempre disponíveis para ajudar você a encontrar o imóvel perfeito.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

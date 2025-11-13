@@ -1,0 +1,218 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Dashboard - Imóvel Prime{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-12">
+        <h1 class="display-5 mb-2">Dashboard</h1>
+        <p class="text-muted">Bem-vindo, <strong>{{ cliente.nome }}</strong>! Gerencie seus imóveis e clientes.</p>
+    </div>
+</div>
+
+<!-- Estatísticas -->
+<div class="row mb-4">
+    <div class="col-md-4 mb-3">
+        <div class="card border-primary">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-muted mb-2">Total de Imóveis</h6>
+                        <h2 class="mb-0" style="color: var(--secondary-color);">{{ total_imoveis }}</h2>
+                    </div>
+                    <div>
+                        <i class="bi bi-building" style="font-size: 3rem; color: var(--secondary-color); opacity: 0.3;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="card border-success">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-muted mb-2">Imóveis Ativos</h6>
+                        <h2 class="mb-0" style="color: var(--success-color);">{{ imoveis_ativos }}</h2>
+                    </div>
+                    <div>
+                        <i class="bi bi-check-circle" style="font-size: 3rem; color: var(--success-color); opacity: 0.3;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="card border-info">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-muted mb-2">Total de Clientes</h6>
+                        <h2 class="mb-0" style="color: var(--secondary-color);">{{ total_clientes }}</h2>
+                    </div>
+                    <div>
+                        <i class="bi bi-people" style="font-size: 3rem; color: var(--secondary-color); opacity: 0.3;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Ações Rápidas -->
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-lightning-charge"></i> Ações Rápidas</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3 mb-3">
+                        <a href="https://localhost:8443/cadastroImovel/" class="btn btn-primary w-100">
+                            <i class="bi bi-plus-circle"></i> Cadastrar Imóvel
+                        </a>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <a href="https://localhost:8443/cadastroCliente/" class="btn btn-success w-100">
+                            <i class="bi bi-person-plus"></i> Cadastrar Cliente
+                        </a>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <a href="http://localhost:8080/imoveis/" class="btn btn-info w-100">
+                            <i class="bi bi-building"></i> Ver Imóveis
+                        </a>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <a href="https://localhost:8443/admin/" class="btn btn-secondary w-100">
+                            <i class="bi bi-gear"></i> Admin
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Imóveis Recentes -->
+<div class="row mb-4">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-building"></i> Imóveis Recentes</h5>
+            </div>
+            <div class="card-body">
+                {% if imoveis_recentes %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Título</th>
+                                    <th>Tipo</th>
+                                    <th>Preço</th>
+                                    <th>Status</th>
+                                    <th>Data</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for imovel in imoveis_recentes %}
+                                <tr>
+                                    <td>{{ imovel.titulo }}</td>
+                                    <td>
+                                        {% if imovel.tipo == 'venda' %}
+                                            <span class="badge bg-primary">Venda</span>
+                                        {% else %}
+                                            <span class="badge bg-info">Aluguel</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>R$ {{ imovel.preco|floatformat:2 }}</td>
+                                    <td>
+                                        {% if imovel.ativo %}
+                                            <span class="badge bg-success">Ativo</span>
+                                        {% else %}
+                                            <span class="badge bg-secondary">Inativo</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ imovel.data_cadastro|date:"d/m/Y" }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="text-center mt-3">
+                        <a href="http://localhost:8080/imoveis/" class="btn btn-primary">Ver Todos os Imóveis</a>
+                    </div>
+                {% else %}
+                    <p class="text-muted text-center">Nenhum imóvel cadastrado ainda.</p>
+                    <div class="text-center">
+                        <a href="https://localhost:8443/cadastroImovel/" class="btn btn-primary">Cadastrar Primeiro Imóvel</a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-people"></i> Clientes Recentes</h5>
+            </div>
+            <div class="card-body">
+                {% if clientes_recentes %}
+                    <div class="list-group list-group-flush">
+                        {% for cliente_item in clientes_recentes %}
+                        <div class="list-group-item border-0 px-0">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-1">{{ cliente_item.nome }}</h6>
+                                    <small class="text-muted">{{ cliente_item.email }}</small>
+                                </div>
+                                <small class="text-muted">{{ cliente_item.data_cadastro|date:"d/m/Y" }}</small>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <div class="text-center mt-3">
+                        <a href="https://localhost:8443/admin/core/cliente/" class="btn btn-sm btn-outline-primary">Ver Todos</a>
+                    </div>
+                {% else %}
+                    <p class="text-muted text-center">Nenhum cliente cadastrado ainda.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Informações do Cliente -->
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-person-circle"></i> Minhas Informações</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>Nome:</strong> {{ cliente.nome }}</p>
+                        <p><strong>E-mail:</strong> {{ cliente.email }}</p>
+                        <p><strong>Telefone:</strong> {{ cliente.telefone }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>CPF:</strong> 
+                            {% if cliente.cpf|length == 11 %}
+                                {{ cliente.cpf|slice:":3" }}.{{ cliente.cpf|slice:"3:6" }}.{{ cliente.cpf|slice:"6:9" }}-{{ cliente.cpf|slice:"9:11" }}
+                            {% else %}
+                                {{ cliente.cpf }}
+                            {% endif %}
+                        </p>
+                        <p><strong>Data de Cadastro:</strong> {{ cliente.data_cadastro|date:"d/m/Y H:i" }}</p>
+                        {% if cliente.observacoes %}
+                            <p><strong>Observações:</strong> {{ cliente.observacoes }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
