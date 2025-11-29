@@ -5,6 +5,7 @@ from django import forms
 from django.core.validators import RegexValidator
 from django.contrib.auth.hashers import make_password
 from .models import Cliente, Imovel
+from .utils import validar_cpf
 
 
 class ClienteForm(forms.ModelForm):
@@ -75,13 +76,17 @@ class ClienteForm(forms.ModelForm):
         }
     
     def clean_cpf(self):
-        """Remove formatação do CPF e valida."""
+        """Remove formatação do CPF e valida incluindo dígitos verificadores."""
         cpf = self.cleaned_data.get('cpf')
         # Remove pontos e hífen
         cpf_limpo = ''.join(filter(str.isdigit, cpf))
         
         if len(cpf_limpo) != 11:
             raise forms.ValidationError("CPF deve conter exatamente 11 dígitos.")
+        
+        # Valida dígitos verificadores
+        if not validar_cpf(cpf_limpo):
+            raise forms.ValidationError("CPF inválido. Verifique os dígitos verificadores.")
         
         return cpf_limpo
     

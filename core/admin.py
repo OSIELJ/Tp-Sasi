@@ -5,7 +5,7 @@ from django.contrib import admin
 from django.utils.html import format_html
 from django.urls import reverse
 from django.utils.safestring import mark_safe
-from .models import Cliente, Imovel
+from .models import Cliente, Imovel, LoginAttempt, Auditoria
 
 
 @admin.register(Cliente)
@@ -13,13 +13,16 @@ class ClienteAdmin(admin.ModelAdmin):
     list_display = ['nome', 'email', 'cpf_formatado', 'telefone', 'data_cadastro_formatada', 'acoes']
     search_fields = ['nome', 'email', 'cpf', 'telefone']
     list_filter = ['data_cadastro']
-    readonly_fields = ['data_cadastro', 'cpf_formatado_display']
+    readonly_fields = ['data_cadastro', 'cpf_formatado_display', 'cadastrado_por', 'ip_cadastro', 'email_verificado', 'bloqueado', 'tentativas_login_falhas', 'ultima_tentativa_login']
     fieldsets = (
         ('Informações Pessoais', {
-            'fields': ('nome', 'email', 'telefone', 'cpf')
+            'fields': ('nome', 'email', 'telefone', 'cpf', 'email_verificado')
+        }),
+        ('Segurança', {
+            'fields': ('bloqueado', 'tentativas_login_falhas', 'ultima_tentativa_login')
         }),
         ('Informações Adicionais', {
-            'fields': ('observacoes', 'data_cadastro')
+            'fields': ('observacoes', 'data_cadastro', 'cadastrado_por', 'ip_cadastro')
         }),
     )
     
@@ -118,6 +121,66 @@ class ImovelAdmin(admin.ModelAdmin):
             reverse('admin:core_imovel_change', args=[obj.pk])
         )
     acoes.short_description = 'Ações'
+
+
+@admin.register(LoginAttempt)
+class LoginAttemptAdmin(admin.ModelAdmin):
+    list_display = ['cpf_formatado', 'ip_address', 'sucesso_badge', 'motivo_falha', 'timestamp_formatado']
+    list_filter = ['sucesso', 'timestamp']
+    search_fields = ['cpf', 'ip_address']
+    readonly_fields = ['cpf', 'ip_address', 'user_agent', 'sucesso', 'motivo_falha', 'timestamp']
+    ordering = ['-timestamp']
+    
+    def cpf_formatado(self, obj):
+        """Retorna CPF formatado."""
+        if obj.cpf and len(obj.cpf) == 11:
+            cpf = obj.cpf
+            return f"{cpf[:3]}.{cpf[3:6]}.{cpf[6:9]}-{cpf[9:11]}"
+        return obj.cpf or '-'
+    cpf_formatado.short_description = 'CPF'
+    
+    def sucesso_badge(self, obj):
+        """Badge de sucesso/falha."""
+        if obj.sucesso:
+            return format_html('<span style="background-color: #27ae60; color: white; padding: 3px 10px; border-radius: 3px;">Sucesso</span>')
+        else:
+            return format_html('<span style="background-color: #e74c3c; color: white; padding: 3px 10px; border-radius: 3px;">Falha</span>')
+    sucesso_badge.short_description = 'Status'
+    
+    def timestamp_formatado(self, obj):
+        """Timestamp formatado."""
+        return obj.timestamp.strftime('%d/%m/%Y %H:%M:%S')
+    timestamp_formatado.short_description = 'Data/Hora'
+    timestamp_formatado.admin_order_field = 'timestamp'
+    
+    def has_add_permission(self, request):
+        return False  # Não permite adicionar manualmente
+
+
+@admin.register(Auditoria)
+class AuditoriaAdmin(admin.ModelAdmin):
+    list_display = ['tipo_acao', 'usuario', 'cpf_formatado', 'ip_address', 'timestamp_formatado']
+    list_filter = ['tipo_acao', 'timestamp']
+    search_fields = ['usuario', 'cpf_usuario', 'ip_address', 'descricao']
+    readonly_fields = ['tipo_acao', 'usuario', 'cpf_usuario', 'ip_address', 'descricao', 'dados_anteriores', 'dados_novos', 'timestamp']
+    ordering = ['-timestamp']
+    
+    def cpf_formatado(self, obj):
+        """Retorna CPF formatado."""
+        if obj.cpf_usuario and len(obj.cpf_usuario) == 11:
+            cpf = obj.cpf_usuario
+            return f"{cpf[:3]}.{cpf[3:6]}.{cpf[6:9]}-{cpf[9:11]}"
+        return obj.cpf_usuario or '-'
+    cpf_formatado.short_description = 'CPF'
+    
+    def timestamp_formatado(self, obj):
+        """Timestamp formatado."""
+        return obj.timestamp.strftime('%d/%m/%Y %H:%M:%S')
+    timestamp_formatado.short_description = 'Data/Hora'
+    timestamp_formatado.admin_order_field = 'timestamp'
+    
+    def has_add_permission(self, request):
+        return False  # Não permite adicionar manualmente
 
 
 # Customização do Admin Site

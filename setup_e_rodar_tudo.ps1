@@ -82,13 +82,14 @@ Write-Host ""
 
 # Iniciar servidor HTTP (porta 8080)
 Write-Host "Iniciando servidor HTTP (porta 8080) em uma nova janela..."
-Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd '$scriptPath'; Write-Host 'Servidor HTTP Rodando...'; & $VenvPython manage.py runserver 0.0.0.0:8080"
+$VenvPythonFullPath = Join-Path $scriptPath ".\.venv\Scripts\python.exe"
+Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd '$scriptPath'; Write-Host 'Servidor HTTP Rodando...'; & '$VenvPythonFullPath' manage.py runserver 0.0.0.0:8080"
 
 Start-Sleep -Seconds 2
 
 # Iniciar servidor HTTPS (porta 8443)
 Write-Host "Iniciando servidor HTTPS (porta 8443) em uma nova janela..."
-Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd '$scriptPath'; Write-Host 'Servidor HTTPS Rodando...'; & $VenvPython -m uvicorn config.asgi:application --host 0.0.0.0 --port 8443 --ssl-keyfile certs\server.key --ssl-certfile certs\server.crt"
+Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd '$scriptPath'; Write-Host 'Servidor HTTPS Rodando...'; & '$VenvPythonFullPath' -m uvicorn config.asgi:application --host 0.0.0.0 --port 8443 --ssl-keyfile certs\server.key --ssl-certfile certs\server.crt"
 
 Start-Sleep -Seconds 3
 
